@@ -3,7 +3,7 @@ Integrate [McFly](https://github.com/cantino/mcfly) with [fzf](https://github.co
 
 Features:
 
-- sqlite-backed history database courtesy of McFly
+- Advanced history tracking and prioritization courtesy of McFly
 - Rebinds `ctrl-r` to use an fzf-based interface
     - Supports [fzf search syntax](https://github.com/junegunn/fzf#search-syntax)
     - Inline layout options
@@ -56,7 +56,7 @@ Features:
 - Respects the following environment variables
     - [`MCFLY_HISTORY_LIMIT`](https://github.com/cantino/mcfly#slow-startup)
     - [`MCFLY_RESULTS_SORT`](https://github.com/cantino/mcfly#results-sorting)
-    - `FZF_DEFAULT_OPTS`, `FZF_CTRL_R_OPTS` (see [`man fzf`](https://www.mankier.com/1/fzf))
+    - `FZF_DEFAULT_OPTS`, `FZF_CTRL_R_OPTS` (can include multiple options from [`man fzf`](https://www.mankier.com/1/fzf))
 - To delete history entries, run `mcfly search` manually
 
 ## How it works
