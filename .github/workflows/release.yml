@@ -66,7 +66,7 @@ jobs:
       RUST_BACKTRACE: 1
     strategy:
       matrix:
-        build: [linux, linux-aarch64, linux-arm, macos]
+        build: [linux, linux-aarch64, linux-arm, macos, macos-aarch64]
         include:
         - build: linux
           os: ubuntu-22.04
@@ -84,6 +84,10 @@ jobs:
           os: macos-12
           rust: nightly
           target: x86_64-apple-darwin
+        - build: macos-aarch64
+          os: macos-12
+          rust: nightly
+          target: aarch64-apple-darwin
 
     steps:
     - name: Checkout repository
