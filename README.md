@@ -15,16 +15,19 @@ Features:
 ![Screenshot](screenshot.png)
 
 ## Installation
-1. Install mcfly: [Download binary](https://github.com/cantino/mcfly/releases), or view [other installation options](https://github.com/cantino/mcfly#installation)
+1. Install mcfly: Included with the [mcfly-fzf binaries](https://github.com/bnprks/mcfly-fzf/releases). Alternatively [download mcfly release binary](https://github.com/cantino/mcfly/releases), or view [other installation options](https://github.com/cantino/mcfly#installation)
 2. Install fzf: [Download binary](https://github.com/junegunn/fzf/releases), or view [other installation options](https://github.com/junegunn/fzf#installation)
-3. Install mcfly-fzf: (Currently requires Rust installation)  
+3. Install mcfly-fzf: [Download binary](https://github.com/bnprks/mcfly-fzf/releases)  
+    Alternatively, install from source:
     ```
     git clone https://github.com/bnprks/mcfly-fzf 
     cd mcfly-fzf 
     cargo install --path .
     ```
+4. Make sure that `mcfly`, `fzf`, and `mcfly-fzf` are all added to your `$PATH`. Following [instructions from McFly](https://github.com/cantino/mcfly#installing-manually-from-github): 
+    > For example, you could create a directory at `~/bin`, copy `mcfly` to this location, and add `export PATH="$PATH:$HOME/bin"` to your `.bashrc` / `.zshrc`, or run `set -Ua fish_user_paths "$HOME/bin"` for fish.
 
-4. Add the following to the end of your `~/.bashrc`, `~/.zshrc`, or `~/.config/fish/config.fish` file:
+5. Add the following to the end of your `~/.bashrc`, `~/.zshrc`, or `~/.config/fish/config.fish` file:
 
     Bash:
     ```bash
