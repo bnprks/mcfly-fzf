@@ -122,7 +122,7 @@ jobs:
     - name: Build archive
       shell: bash
       run: |
-        tar -czvf mcfly-fzf.tar.gz --directory=${{ env.TARGET_DIR }} mcfly mcfly-fzf
+        tar -czvf mcfly-fzf.tar.gz --directory=${{ env.TARGET_DIR }}/release mcfly mcfly-fzf
         echo "ASSET=mcfly-fzf.tar.gz" >> $GITHUB_ENV
 
     - name: Upload release archive
