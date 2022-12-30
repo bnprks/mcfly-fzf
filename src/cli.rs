@@ -45,6 +45,7 @@ pub enum Command {
         /// JSON file to read/write view options from (e.g. set by toggle)
         options_json: Option<String>,
     },
+    /// Mark a command as selected from the fzf interface
     Select {
         /// The command that was run
         command: Vec<String>,
@@ -53,6 +54,7 @@ pub enum Command {
         #[arg(short, long)]
         dir: Option<String>,
     },
+    /// Toggle/create view options in a json file
     Toggle {
         /// Path of the file holding sort state
         path: String,
