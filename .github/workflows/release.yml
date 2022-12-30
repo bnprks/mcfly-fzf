@@ -1,4 +1,4 @@
-# Stolen shamelessly from https://github.com/BurntSushi/ripgrep/blob/master/.github/workflows/release.yml
+# Stolen shamelessly then adapted from https://github.com/BurntSushi/ripgrep/blob/master/.github/workflows/release.yml
 # The way this works is the following:
 #
 # The create-release job runs purely to initialize the GitHub release itself
@@ -31,25 +31,25 @@ jobs:
       # RG_VERSION: TEST-0.0.0
     outputs:
       upload_url: ${{ steps.release.outputs.upload_url }}
-      rg_version: ${{ env.RG_VERSION }}
+      version: ${{ env.VERSION }}
     steps:
       - name: Get the release version from the tag
         shell: bash
-        if: env.RG_VERSION == ''
+        if: env.VERSION == ''
         run: |
           # Apparently, this is the right way to get a tag name. Really?
           #
           # See: https://github.community/t5/GitHub-Actions/How-to-get-just-the-tag-name/m-p/32167/highlight/true#M1027
-          echo "RG_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-          echo "version is: ${{ env.RG_VERSION }}"
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          echo "version is: ${{ env.VERSION }}"
       - name: Create GitHub release
         id: release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.RG_VERSION }}
-          release_name: ${{ env.RG_VERSION }}
+          tag_name: ${{ env.VERSION }}
+          release_name: ${{ env.VERSION }}
 
   build-release:
     name: build-release
@@ -65,8 +65,6 @@ jobs:
       TARGET_DIR: ./target
       # Emit backtraces on panics.
       RUST_BACKTRACE: 1
-      # Build static releases with PCRE2.
-      PCRE2_SYS_STATIC: 1
     strategy:
       matrix:
         build: [linux, linux-arm, macos, win-msvc, win-gnu, win32-msvc]
@@ -75,6 +73,10 @@ jobs:
           os: ubuntu-22.04
           rust: nightly
           target: x86_64-unknown-linux-musl
+        - build: linux
+          os: ubuntu-22.04
+          rust: nightly
+          target: aarch64-unknown-linux-musl
         - build: linux-arm
           os: ubuntu-22.04
           rust: nightly
@@ -83,18 +85,6 @@ jobs:
           os: macos-12
           rust: nightly
           target: x86_64-apple-darwin
-        - build: win-msvc
-          os: windows-2022
-          rust: nightly
-          target: x86_64-pc-windows-msvc
-        - build: win-gnu
-          os: windows-2022
-          rust: nightly-x86_64-gnu
-          target: x86_64-pc-windows-gnu
-        - build: win32-msvc
-          os: windows-2022
-          rust: nightly
-          target: i686-pc-windows-msvc
 
     steps:
     - name: Checkout repository
@@ -102,13 +92,7 @@ jobs:
 
     - name: Install packages (Ubuntu)
       if: matrix.os == 'ubuntu-22.04'
-      run: |
-        ci/ubuntu-install-packages
-
-    - name: Install packages (macOS)
-      if: matrix.os == 'macos-12'
-      run: |
-        ci/macos-install-packages
+      run: sudo apt-get install -y --no-install-recommends musl-tools
 
     - name: Install Rust
       uses: dtolnay/rust-toolchain@master
@@ -130,45 +114,17 @@ jobs:
         echo "target flag is: ${{ env.TARGET_FLAGS }}"
         echo "target dir is: ${{ env.TARGET_DIR }}"
 
-    - name: Build release binary
-      run: ${{ env.CARGO }} build --verbose --release --features pcre2 ${{ env.TARGET_FLAGS }}
-
-    - name: Strip release binary (linux and macos)
-      if: matrix.build == 'linux' || matrix.build == 'macos'
-      run: strip "target/${{ matrix.target }}/release/rg"
-
-    - name: Strip release binary (arm)
-      if: matrix.build == 'linux-arm'
-      run: |
-        docker run --rm -v \
-          "$PWD/target:/target:Z" \
-          rustembedded/cross:arm-unknown-linux-gnueabihf \
-          arm-linux-gnueabihf-strip \
-          /target/arm-unknown-linux-gnueabihf/release/rg
+    - name: Build release binary (mcfly-fzf)
+      run: ${{ env.CARGO }} build --verbose --release ${{ env.TARGET_FLAGS }}
+    
+    - name: Build release binary (mcfly)
+      run: ${{ env.CARGO }} build --verbose --release ${{ env.TARGET_FLAGS }} -p mcfly
 
     - name: Build archive
       shell: bash
       run: |
-        outdir="$(ci/cargo-out-dir "${{ env.TARGET_DIR }}")"
-        staging="ripgrep-${{ needs.create-release.outputs.rg_version }}-${{ matrix.target }}"
-        mkdir -p "$staging"/{complete,doc}
-
-        cp {README.md,COPYING,UNLICENSE,LICENSE-MIT} "$staging/"
-        cp {CHANGELOG.md,FAQ.md,GUIDE.md} "$staging/doc/"
-        cp "$outdir"/{rg.bash,rg.fish,_rg.ps1} "$staging/complete/"
-        cp complete/_rg "$staging/complete/"
-
-        if [ "${{ matrix.os }}" = "windows-2022" ]; then
-          cp "target/${{ matrix.target }}/release/rg.exe" "$staging/"
-          7z a "$staging.zip" "$staging"
-          echo "ASSET=$staging.zip" >> $GITHUB_ENV
-        else
-          # The man page is only generated on Unix systems. ¯\_(ツ)_/¯
-          cp "$outdir"/rg.1 "$staging/doc/"
-          cp "target/${{ matrix.target }}/release/rg" "$staging/"
-          tar czf "$staging.tar.gz" "$staging"
-          echo "ASSET=$staging.tar.gz" >> $GITHUB_ENV
-        fi
+        tar -czvf mcfly-fzf.tar.gz --directory=${{ env.TARGET_DIR }} mcfly mcfly-fzf
+        echo "ASSET=mcfly-fzf.tar.gz" >> $GITHUB_ENV
 
     - name: Upload release archive
       uses: actions/upload-release-asset@v1.0.2
@@ -177,5 +133,5 @@ jobs:
       with:
         upload_url: ${{ needs.create-release.outputs.upload_url }}
         asset_path: ${{ env.ASSET }}
-        asset_name: ${{ env.ASSET }}
-        asset_content_type: application/octet-stream
+        asset_name: mcfly-fzf-${{ needs.create-release.outputs.version }}-${{ matrix.target }}.tar.gz
+        asset_content_type: application/gzip
