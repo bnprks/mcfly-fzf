@@ -3,14 +3,14 @@ Integrate [McFly](https://github.com/cantino/mcfly) with [fzf](https://github.co
 
 Features:
 
-- Advanced history tracking and prioritization courtesy of McFly
+- Advanced [history tracking](https://github.com/cantino/mcfly#features) and [prioritization](https://github.com/cantino/mcfly#prioritization) courtesy of McFly
 - Rebinds `ctrl-r` to use an fzf-based interface
     - Supports [fzf search syntax](https://github.com/junegunn/fzf#search-syntax)
-    - Inline layout options
+    - Inline layout [options](https://www.mankier.com/1/fzf#Options-Layout)
 - Toggle options in fzf interface:
-    - F1: Sort by time vs neural network score
-    - F2: Limit to commands run from current directory vs any directory
-    - F3: Filter by exit status: Okay (zero), Fail (non-zero), Any
+    - F1: Sort by time / neural network score
+    - F2: Limit to commands run from current directory / any directory
+    - F3: Filter by exit status: [Okay (zero) / Fail (non-zero) / Any]
 
 ![Screenshot](screenshot.png)
 
