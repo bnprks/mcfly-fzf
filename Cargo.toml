@@ -1,13 +1,22 @@
 [package]
 name = "mcfly-fzf"
 version = "0.1.0"
+authors = ["Ben Parks <bnprks@users.noreply.github.com>"]
+description = "Integrate McFly with fzf to combine a solid command history database with a widely-loved fuzzy search UI"
+license = "MIT"
+repository = "https://github.com/bnprks/mcfly-fzf"
+categories = ["command-line-utilities"]
 edition = "2021"
+exclude = [
+  "screenshot.png"
+]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[profile.release]
+lto = true
 
 [dependencies]
 chrono = "0.4"
-clap = "4"
+clap = {version = "4", features = ["derive"]}
 mcfly = "0.7.1"
 humantime = "2"
 serde = {version = "1", features = ["derive"]}
