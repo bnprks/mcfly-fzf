@@ -11,9 +11,9 @@ use crate::cli::{DumpOptions, ExitCode, InitMode, ResultSort, ToggleChoice};
 
 pub fn init(mode: InitMode) {
     let text = match mode {
-        InitMode::Bash => include_str!("../mcfly-fzf.bash"),
-        InitMode::Zsh => include_str!("../mcfly-fzf.zsh"),
-        InitMode::Fish => include_str!("../mcfly-fzf.fish"),
+        InitMode::Bash => include_str!("../shell/mcfly-fzf.bash"),
+        InitMode::Zsh => include_str!("../shell/mcfly-fzf.zsh"),
+        InitMode::Fish => include_str!("../shell/mcfly-fzf.fish"),
     };
     print!("{}", text)
 }
