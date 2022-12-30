@@ -33,7 +33,7 @@ if [[ -o interactive ]] && [[ "$__MCFLY_FZF_LOADED" != "loaded" ]]; then
 
   # Get temporary file for communicating view options state
   if [[ ! -f "${MCFLY_FZF_OPTS}" ]]; then
-    export MCFLY_FZF_OPTS=$(command mktemp ${TMPDIR:-/tmp}/mcfly-fzf.XXXXXXXX)
+    export MCFLY_FZF_OPTS=$(command mktemp ${TMPDIR:-/tmp}/mcfly-fzf.XXXXXXXX.json)
   fi
 
   mcfly-fzf-exit-logger() {
