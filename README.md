@@ -1,5 +1,5 @@
 # McFly fzf integration
-This project integrates the history database from [McFly](https://github.com/cantino/mcfly) with a search interface powered by [fzf](https://github.com/junegunn/fzf).
+Integrate [McFly](https://github.com/cantino/mcfly) with [fzf](https://github.com/junegunn/fzf) to combine a solid command history database with a widely-loved fuzzy search UI
 
 Features:
 
