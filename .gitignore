@@ -1,0 +1,7 @@
+/target
+.zcompdump
+.zsh
+.zsh_history
+.zshrc
+.fish
+.bash_dev_setup
