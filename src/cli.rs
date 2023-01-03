@@ -56,7 +56,7 @@ pub enum Command {
     },
     /// Toggle/create view options in a json file
     Toggle {
-        /// Path of the file holding sort state
+        /// Path of the file holding toggle state
         path: String,
         /// Setting to toggle
         toggle: ToggleChoice,

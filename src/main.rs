@@ -15,19 +15,16 @@ fn main() {
         } => {
             let history = History::load(settings.history_format.into());
             let dir = dir.unwrap_or_else(|| panic!("Mcfly-fzf error: Could not detect dir"));
-            history.build_cache_table(
-                &dir,
-                &Some(
-                    settings
-                        .session_id
-                        .unwrap_or_else(|| panic!("Mcfly-fzf error: Could not detect session_id")),
-                ),
-                None,
-                None,
-                None,
+
+            mcfly_fzf::fzf::dump(
+                &history,
+                settings.session_id,
                 limit,
-            );
-            mcfly_fzf::fzf::dump(&history, zero_separated, header, &dir, options_json)
+                zero_separated,
+                header,
+                &dir,
+                options_json,
+            )
         }
         Command::Select { command, dir } => {
             let history = History::load(settings.history_format.into());

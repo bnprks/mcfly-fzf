@@ -490,6 +490,7 @@ dependencies = [
  "clap",
  "humantime",
  "mcfly",
+ "rusqlite",
  "serde",
  "serde_json",
 ]

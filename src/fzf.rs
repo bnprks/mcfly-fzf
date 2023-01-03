@@ -1,13 +1,13 @@
 use chrono::{Duration, TimeZone, Utc};
+use rusqlite::named_params;
 use std::{
     fs::File,
     io::{BufReader, BufWriter, Write},
     path::Path,
 };
 
-use mcfly::history::History;
-
 use crate::cli::{DumpOptions, ExitCode, InitMode, ResultSort, ToggleChoice};
+use mcfly::history::History;
 
 pub fn init(mode: InitMode) {
     let text = match mode {
@@ -20,6 +20,8 @@ pub fn init(mode: InitMode) {
 
 pub fn dump(
     history: &History,
+    session_id: Option<String>,
+    limit: Option<i64>,
     zero_separated: bool,
     header: bool,
     current_dir: &String,
@@ -31,8 +33,13 @@ pub fn dump(
         DumpOptions::default()
     };
 
+    // Only build cache table if we're using neural network ranking
+    if let ResultSort::Rank = options.sort_order {
+        history.build_cache_table(current_dir, &session_id, None, None, None, limit);
+    }
+
     let order_clause: &str = match options.sort_order {
-        ResultSort::LastRun => "contextual_commands.last_run DESC",
+        ResultSort::LastRun => "last_run DESC",
         _ => "contextual_commands.rank DESC",
     };
 
@@ -47,23 +54,51 @@ pub fn dump(
         ExitCode::Success => "commands.exit_code == 0",
     };
 
-    let query: &str = &format!(
-        "SELECT contextual_commands.cmd, contextual_commands.last_run
-        FROM contextual_commands
-            INNER JOIN commands 
-            ON contextual_commands.cmd = commands.cmd
-        WHERE {} AND {}
-        GROUP BY contextual_commands.cmd
-        ORDER BY {};",
-        dir_clause, status_clause, order_clause,
-    )[..];
+    // Math for limiting search history copied from history::build_cache_table
+    let max_id: i64 = history
+        .connection
+        .query_row("SELECT IFNULL(MAX(id), 0) FROM commands", [], |row| {
+            row.get(0)
+        })
+        .unwrap_or(0);
+
+    let min_id = if let Some(limit_value) = limit {
+        if limit_value > max_id {
+            0
+        } else {
+            (max_id as f64 * (1.0 - (limit_value as f64 / max_id as f64))) as i64
+        }
+    } else {
+        0
+    };
+
+    let query: String = match options.sort_order {
+        ResultSort::Rank => format!(
+            "SELECT contextual_commands.cmd, MAX(when_run) as last_run
+            FROM contextual_commands
+                INNER JOIN commands 
+                ON contextual_commands.cmd = commands.cmd
+            WHERE commands.id > :min_id AND {} AND {}
+            GROUP BY contextual_commands.cmd
+            ORDER BY {};",
+            dir_clause, status_clause, order_clause,
+        ),
+        ResultSort::LastRun => format!(
+            "SELECT commands.cmd, MAX(when_run) AS last_run
+            FROM commands 
+            WHERE commands.id > :min_id AND {} AND {}
+            GROUP BY commands.cmd
+            ORDER BY {};",
+            dir_clause, status_clause, order_clause,
+        ),
+    };
 
     let mut statement = history
         .connection
-        .prepare(query)
+        .prepare(&query)
         .unwrap_or_else(|err| panic!("Mcfly-fzf error: Prepare to work ({})", err));
     let mut rows = statement
-        .query(&[(":current_dir", current_dir)])
+        .query(named_params! {":current_dir": current_dir, ":min_id": min_id})
         .unwrap_or_else(|err| panic!("Mcfly-fzf error: Query Map to work ({})", err));
 
     let mut stdout = std::io::stdout();
