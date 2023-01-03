@@ -74,7 +74,7 @@ pub fn dump(
 
     let query: String = match options.sort_order {
         ResultSort::Rank => format!(
-            "SELECT contextual_commands.cmd, MAX(when_run) as last_run
+            "SELECT contextual_commands.cmd, MAX(commands.when_run) as last_run
             FROM contextual_commands
                 INNER JOIN commands 
                 ON contextual_commands.cmd = commands.cmd
