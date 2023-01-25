@@ -20,9 +20,7 @@ Features:
 3. Install mcfly-fzf: [Download binary](https://github.com/bnprks/mcfly-fzf/releases)  
     Alternatively, install from source:
     ```
-    git clone https://github.com/bnprks/mcfly-fzf 
-    cd mcfly-fzf 
-    cargo install --path .
+    cargo install --git https://github.com/bnprks/mcfly-fzf
     ```
 4. Make sure that `mcfly`, `fzf`, and `mcfly-fzf` are all added to your `$PATH`. Following [instructions from McFly](https://github.com/cantino/mcfly#installing-manually-from-github): 
     > For example, you could create a directory at `~/bin`, copy `mcfly` to this location, and add `export PATH="$PATH:$HOME/bin"` to your `.bashrc` / `.zshrc`, or run `set -Ua fish_user_paths "$HOME/bin"` for fish.
