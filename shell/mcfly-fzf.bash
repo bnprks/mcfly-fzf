@@ -27,7 +27,7 @@ if [[ -t 0 ]] && [[ "$__MCFLY_FZF_LOADED" != "loaded" ]]; then
 
   # Get temporary file for communicating view options state
   if [[ ! -f "${MCFLY_FZF_OPTS}" ]]; then
-    export MCFLY_FZF_OPTS=$(command mktemp ${TMPDIR:-/tmp}/mcfly-fzf.XXXXXXXX.json)
+    export MCFLY_FZF_OPTS=$(command mktemp ${TMPDIR:-/tmp}/mcfly-fzf.json.XXXXXXXX)
   fi
 
   # If this is an interactive shell, take ownership of ctrl-r.

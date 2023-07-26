@@ -28,7 +28,7 @@ if test "$__MCFLY_FZF_LOADED" != "loaded"
     set tmpdir /tmp
   end
   # MCFLY_SESSION_ID is used by McFly internally to keep track of the commands from a particular terminal session.
-  set -gx MCFLY_FZF_OPTS (mktemp "$tmpdir/mcfly-fzf.XXXXXXXX.json")
+  set -gx MCFLY_FZF_OPTS (mktemp "$tmpdir/mcfly-fzf.json.XXXXXXXX")
 
   # If this is an interactive shell, set up key binding functions.
   if status is-interactive
