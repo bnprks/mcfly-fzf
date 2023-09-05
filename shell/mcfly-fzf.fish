@@ -39,6 +39,7 @@ if test "$__MCFLY_FZF_LOADED" != "loaded"
         set -lx FZF_DEFAULT_OPTS "--height $FZF_TMUX_HEIGHT --bind=ctrl-z:ignore $FZF_DEFAULT_OPTS 
           --nth=2.. --delimiter='\t' --no-hscroll --tiebreak=index --read0 --layout reverse 
           --bind=ctrl-r:toggle-sort 
+          --bind='ctrl-d:reload(\"$MCFLY_FZF_PATH\" delete {2} && \"$MCFLY_FZF_PATH\" dump --header -0 --options-json \"$MCFLY_FZF_OPTS\")'
           --bind='f1:reload(\"$MCFLY_FZF_PATH\" toggle \"$MCFLY_FZF_OPTS\" sort-order && \"$MCFLY_FZF_PATH\" dump --header -0 --options-json \"$MCFLY_FZF_OPTS\")' 
           --bind='f2:reload(\"$MCFLY_FZF_PATH\" toggle \"$MCFLY_FZF_OPTS\" current-dir-only && \"$MCFLY_FZF_PATH\" dump --header -0 --options-json \"$MCFLY_FZF_OPTS\")' 
           --bind='f3:reload(\"$MCFLY_FZF_PATH\" toggle \"$MCFLY_FZF_OPTS\" exit-code && \"$MCFLY_FZF_PATH\" dump --header -0 --options-json \"$MCFLY_FZF_OPTS\")' 

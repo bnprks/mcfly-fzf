@@ -61,6 +61,11 @@ pub enum Command {
         /// Setting to toggle
         toggle: ToggleChoice,
     },
+    /// Delete a command
+    Delete {
+        /// The command string to be deleted
+        command: String,
+    }
 }
 
 #[derive(Clone, Copy, ValueEnum, Default)]
@@ -166,6 +171,7 @@ impl Cli {
                 dir: dir.or_else(|| env::var("PWD").ok()),
             },
             Command::Toggle { path, toggle } => Command::Toggle { path, toggle },
+            Command::Delete { command } => Command::Delete { command },
         };
         cli.session_id = cli.session_id.or_else(|| env::var("MCFLY_SESSION_ID").ok());
         cli

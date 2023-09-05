@@ -39,5 +39,9 @@ fn main() {
         Command::Toggle { path, toggle } => {
             mcfly_fzf::fzf::toggle(path, toggle);
         }
+        Command::Delete { command } => {
+            let history = History::load(settings.history_format.into());
+            history.delete_command(&command);
+        }
     }
 }
