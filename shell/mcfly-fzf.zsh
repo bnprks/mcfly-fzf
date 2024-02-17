@@ -31,6 +31,14 @@ if [[ -o interactive ]] && [[ "$__MCFLY_FZF_LOADED" != "loaded" ]]; then
     return 1
   fi
 
+  # Define helper for tmux users (issue #5)
+  # (taken from https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh, 
+  #  MIT-licensed, copyright Junegunn Choi: https://github.com/junegunn/fzf/blob/master/LICENSE )
+  __fzfcmd_mcflyfzf() {
+    [ -n "${TMUX_PANE-}" ] && { [ "${FZF_TMUX:-0}" != 0 ] || [ -n "${FZF_TMUX_OPTS-}" ]; } &&
+      echo "fzf-tmux ${FZF_TMUX_OPTS:--d${FZF_TMUX_HEIGHT:-40%}} -- " || echo "fzf"
+  }
+
   # Get temporary file for communicating view options state
   if [[ ! -f "${MCFLY_FZF_OPTS}" ]]; then
     export MCFLY_FZF_OPTS=$(command mktemp ${TMPDIR:-/tmp}/mcfly-fzf.json.XXXXXXXX)
@@ -60,7 +68,7 @@ if [[ -o interactive ]] && [[ "$__MCFLY_FZF_LOADED" != "loaded" ]]; then
           $FZF_CTRL_R_OPTS +m"
 
       selected=$(
-          $MCFLY_FZF_PATH --history-format $MCFLY_HISTORY_FORMAT dump --header -0 --options-json $MCFLY_FZF_OPTS | FZF_DEFAULT_OPTS="$opts" fzf --query="$LBUFFER"
+          $MCFLY_FZF_PATH --history-format $MCFLY_HISTORY_FORMAT dump --header -0 --options-json $MCFLY_FZF_OPTS | FZF_DEFAULT_OPTS="$opts" $(__fzfcmd_mcflyfzf) --query="$LBUFFER"
       )
 
       local ret=$?

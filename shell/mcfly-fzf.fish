@@ -23,6 +23,21 @@ if test "$__MCFLY_FZF_LOADED" != "loaded"
     exit 1
   end
 
+  # Define helper for tmux users (issue #5)
+  # (taken from https://github.com/junegunn/fzf/blob/master/shell/key-bindings.fish, 
+  #  MIT-licensed, copyright Junegunn Choi: https://github.com/junegunn/fzf/blob/master/LICENSE )
+  function __fzfcmd_mcflyfzf
+    test -n "$FZF_TMUX"; or set FZF_TMUX 0
+    test -n "$FZF_TMUX_HEIGHT"; or set FZF_TMUX_HEIGHT 40%
+    if [ -n "$FZF_TMUX_OPTS" ]
+      echo "fzf-tmux $FZF_TMUX_OPTS -- "
+    else if [ $FZF_TMUX -eq 1 ]
+      echo "fzf-tmux -d$FZF_TMUX_HEIGHT -- "
+    else
+      echo "fzf"
+    end
+  end
+
   set -l tmpdir $TMPDIR
   if test -z "$tmpdir"
     set tmpdir /tmp
@@ -46,7 +61,7 @@ if test "$__MCFLY_FZF_LOADED" != "loaded"
           --header-lines 1
           $FZF_CTRL_R_OPTS +m"
 
-        eval $MCFLY_FZF_PATH --history-format fish dump --header -0 --options-json $MCFLY_FZF_OPTS | eval fzf -q '(commandline)' | 
+        eval $MCFLY_FZF_PATH --history-format fish dump --header -0 --options-json $MCFLY_FZF_OPTS | eval (__fzfcmd_mcflyfzf) -q '(commandline)' | 
         string replace -r "[^\t]*\t" "" | read -l result
         and commandline -- $result
         and eval $MCFLY_FZF_PATH select -- "$result"
