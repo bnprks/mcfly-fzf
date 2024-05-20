@@ -35,7 +35,7 @@ pub fn dump(
 
     // Only build cache table if we're using neural network ranking
     if let ResultSort::Rank = options.sort_order {
-        history.build_cache_table(current_dir, &session_id, None, None, None, limit);
+        history.build_cache_table(current_dir, &mcfly::settings::ResultFilter::Global, &session_id, None, None, None, limit);
     }
 
     let order_clause: &str = match options.sort_order {
