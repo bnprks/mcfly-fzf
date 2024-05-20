@@ -36,8 +36,12 @@ fn main() {
                 &dir.unwrap_or_else(|| panic!("Mcfly-fzf error: Could not detect dir")),
             );
         }
-        Command::Toggle { path, toggle } => {
-            mcfly_fzf::fzf::toggle(path, toggle);
+        Command::Toggle { path, toggle, view} => {
+            if view {
+                mcfly_fzf::fzf::print_toggle(path, toggle);
+            } else {
+                mcfly_fzf::fzf::toggle(path, toggle);
+            }
         }
     }
 }

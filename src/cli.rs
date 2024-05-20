@@ -54,12 +54,15 @@ pub enum Command {
         #[arg(short, long)]
         dir: Option<String>,
     },
-    /// Toggle/create view options in a json file
+    /// Toggle/create/view options in a json file
     Toggle {
         /// Path of the file holding toggle state
         path: String,
-        /// Setting to toggle
+        /// Setting to view/toggle
         toggle: ToggleChoice,
+        #[arg(short, long)]
+        /// View the setting rather than toggling it
+        view: bool,
     },
 }
 
@@ -92,6 +95,7 @@ pub enum ToggleChoice {
     SortOrder,
     CurrentDirOnly,
     ExitCode,
+    StrictOrdering,
 }
 
 #[derive(Clone, Copy, ValueEnum, Serialize, Deserialize)]
@@ -126,7 +130,7 @@ pub(crate) enum ExitCode {
     #[default]
     Any,
 }
-#[derive(Args, Clone, Serialize, Deserialize, Default)]
+#[derive(Args, Clone, Serialize, Deserialize)]
 pub struct DumpOptions {
     /// Sort ordering of results
     #[arg(value_name = "SORT", value_enum, long = "sort")]
@@ -136,6 +140,20 @@ pub struct DumpOptions {
 
     #[arg(value_name = "EXIT_CODE", value_enum, long = "exit", default_value_t)]
     pub(crate) exit_code: ExitCode,
+
+    // If true, don't let fzf apply any re-ordering to the results
+    pub(crate) strict_ordering: bool,
+}
+
+impl Default for DumpOptions {
+    fn default() -> Self {
+        DumpOptions {
+            sort_order: ResultSort::default(),
+            current_dir_only: false,
+            exit_code: ExitCode::default(),
+            strict_ordering: env::var("MCFLY_FZF_NO_STRICT_ORDERING").is_err(),
+        }
+    }
 }
 
 impl Cli {
@@ -165,7 +183,7 @@ impl Cli {
                 command,
                 dir: dir.or_else(|| env::var("PWD").ok()),
             },
-            Command::Toggle { path, toggle } => Command::Toggle { path, toggle },
+            Command::Toggle { path, toggle, view } => Command::Toggle { path, toggle, view },
         };
         cli.session_id = cli.session_id.or_else(|| env::var("MCFLY_SESSION_ID").ok());
         cli

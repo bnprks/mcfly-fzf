@@ -106,7 +106,7 @@ pub fn dump(
     if header {
         stdout
             .write_fmt(format_args!(
-                "F1 Sort ({}) | F2 Dir ({}) | F3 Status {} | Ctrl-R Toggle Strict Ordering",
+                "F1 Sort ({}) | F2 Dir ({}) | F3 Status {} | Ctrl-R Strict Ordering {}",
                 match options.sort_order {
                     ResultSort::LastRun => "Time",
                     ResultSort::Rank => "Rank",
@@ -119,7 +119,8 @@ pub fn dump(
                     ExitCode::Any => "(Any) ",
                     ExitCode::Fail => "(Fail)",
                     ExitCode::Success => "(Okay)",
-                }
+                },
+                if options.strict_ordering {"(On) "} else {"(Off)"}
             ))
             .and_then(|_| stdout.write(if zero_separated { b"\0" } else { b"\n" }))
             .unwrap();
@@ -169,9 +170,26 @@ pub fn toggle(path: String, toggle: ToggleChoice) {
                 ExitCode::Any => ExitCode::Success,
             }
         }
+        ToggleChoice::StrictOrdering => opts.strict_ordering = !opts.strict_ordering,
     }
 
     write_dump_options(&path, &opts)
+}
+
+pub fn print_toggle(path: String, toggle: ToggleChoice) {
+    let opts = read_dump_options(&path);
+    match toggle {
+        ToggleChoice::StrictOrdering => {
+            if opts.strict_ordering {
+                println!("+s");
+            } else {
+                println!("");
+            }
+        }
+        _ => {
+            eprintln!("Only viewing of strict-ordering toggle is supported.")
+        }
+    }
 }
 
 /// Read dump option from a json file, or default options in case of a non-existent file

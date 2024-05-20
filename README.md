@@ -55,6 +55,7 @@ Features:
     - [`MCFLY_HISTORY_LIMIT`](https://github.com/cantino/mcfly#slow-startup)
     - [`MCFLY_RESULTS_SORT`](https://github.com/cantino/mcfly#results-sorting)
     - `FZF_DEFAULT_OPTS`, `FZF_CTRL_R_OPTS` (can include multiple options from [`man fzf`](https://www.mankier.com/1/fzf))
+    - `MCFLY_FZF_NO_STRICT_ORDERING`: if set, this variable causes mcfly-fzf to default to strict ordering off rather than on for new terminal sessions.
 - To delete history entries, run `mcfly search` manually
 
 ## How it works

@@ -1,6 +1,6 @@
 [package]
 name = "mcfly-fzf"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Ben Parks <bnprks@users.noreply.github.com>"]
 description = "Integrate McFly with fzf to combine a solid command history database with a widely-loved fuzzy search UI"
 license = "MIT"
