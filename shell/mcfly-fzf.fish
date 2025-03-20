@@ -3,7 +3,7 @@
 # Exit early on non-interactive shells
 if not status is-interactive
   exit 0
-fi
+end
 
 # Ensure mcfly is initialized first
 if not set -q MCFLY_SESSION_ID
