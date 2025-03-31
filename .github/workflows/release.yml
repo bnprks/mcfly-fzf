@@ -14,6 +14,8 @@
 # Reference:
 # https://eugene-babichenko.github.io/blog/2020/05/09/github-actions-cross-platform-auto-releases/
 
+
+# Note: to run this manually in case of issues, just delete the release+tag, then re-push a tag
 name: release
 on:
   push:
@@ -21,9 +23,7 @@ on:
     # branches:
     # - ag/work
     tags:
-    - "[0-9]+.[0-9]+.[0-9]+"
-  workflow_dispatch:
-    
+    - "[0-9]+.[0-9]+.[0-9]+"    
   
 jobs:
   create-release:
