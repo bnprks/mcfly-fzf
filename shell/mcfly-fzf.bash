@@ -1,13 +1,9 @@
 #!/bin/bash
 
-# Exit early on non-interactive shells
-if ! [[ $- =~ .*i.* ]]; then
-  exit 0
-fi
-
 # Ensure stdin is a tty
+# Only run on interactive shells
 # Avoid loading this file more than once
-if [[ -t 0 ]] && [[ "$__MCFLY_FZF_LOADED" != "loaded" ]]; then
+if [[ -t 0 ]] && [[ $- =~ .*i.* ]] && [[ "$__MCFLY_FZF_LOADED" != "loaded" ]]; then
   __MCFLY_FZF_LOADED="loaded"
 
   # Ensure mcfly is initialized first

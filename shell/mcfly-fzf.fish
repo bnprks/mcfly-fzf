@@ -1,19 +1,16 @@
 #!/usr/bin/env fish
 
-# Exit early on non-interactive shells
-if not status is-interactive
-  exit 0
-end
-
-# Ensure mcfly is initialized first
-if not set -q MCFLY_SESSION_ID
-  echo "Mcfly-fzf: Must initialize mcfly before mcfly-fzf"
-  exit 1
-end
-
+# Only run on interactive shells
 # Avoid loading this file more than once
-if test "$__MCFLY_FZF_LOADED" != "loaded"
+if status is-interactive && test "$__MCFLY_FZF_LOADED" != "loaded"
   set -g __MCFLY_FZF_LOADED "loaded"
+
+
+  # Ensure mcfly is initialized first
+  if not set -q MCFLY_SESSION_ID
+    echo "Mcfly-fzf: Must initialize mcfly before mcfly-fzf"
+    exit 1
+  end
 
   # Find the mcfly-fzf binary
   set -q MCFLY_FZF_PATH; or set -g MCFLY_FZF_PATH (command -v mcfly-fzf)
@@ -56,10 +53,10 @@ if test "$__MCFLY_FZF_LOADED" != "loaded"
       and eval $MCFLY_FZF_PATH select -- "$result"
     end
     commandline -f repaint
+  end
 
-    bind \cr __mcfly-fzf-history-widget
-    if bind -M insert >/dev/null 2>&1
-      bind -M insert \cr __mcfly-fzf-history-widget
-    end
+  bind \cr __mcfly-fzf-history-widget
+  if bind -M insert >/dev/null 2>&1
+    bind -M insert \cr __mcfly-fzf-history-widget
   end
 end

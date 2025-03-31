@@ -1,25 +1,21 @@
 #!/bin/zsh
 
-# Exit early on non-interactive shells
-if [[ ! -o interactive ]]; then
-  return 0
-fi
-
-# Ensure mcfly is initialized first
-if [[ ! -n "$MCFLY_SESSION_ID" ]]; then
-  echo "Mcfly-fzf: Must initialize mcfly before mcfly-fzf"
-  return 1
-fi
-
-# Make sure history format is defined
-if [[ ! -n "$MCFLY_HISTORY_FORMAT" ]]; then
-  echo "Mcfly-fzf: MCFLY_HISTORY_FORMAT must be set by mcfly init zsh";
-  return 1
-fi
-
+# Only run on interactive shells
 # Avoid loading this file more than once
-if [[ "$__MCFLY_FZF_LOADED" != "loaded" ]]; then
+if [[ -o interactive ]] && [[ "$__MCFLY_FZF_LOADED" != "loaded" ]]; then
   __MCFLY_FZF_LOADED="loaded"
+
+  # Ensure mcfly is initialized first
+  if [[ ! -n "$MCFLY_SESSION_ID" ]]; then
+    echo "Mcfly-fzf: Must initialize mcfly before mcfly-fzf"
+    return 1
+  fi
+
+  # Make sure history format is defined
+  if [[ ! -n "$MCFLY_HISTORY_FORMAT" ]]; then
+    echo "Mcfly-fzf: MCFLY_HISTORY_FORMAT must be set by mcfly init zsh";
+    return 1
+  fi
 
   # Find the mcfly-fzf binary
   MCFLY_FZF_PATH=${MCFLY_FZF_PATH:-$(command -v mcfly-fzf)}

@@ -23,4 +23,4 @@ XDG_DATA_HOME=$this_dir/.fish \
   RUST_BACKTRACE=full \
   MCFLY_DEBUG=1 \
   PATH=$this_dir/../target/debug/:$PATH \
-  exec /usr/bin/env fish -i
+  exec /usr/bin/env -u __MCFLY_FZF_LOADED fish -i
